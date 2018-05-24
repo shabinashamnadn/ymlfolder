@@ -1,0 +1,176 @@
+apiVersion: kops/v1alpha2
+kind: Cluster
+metadata:
+  creationTimestamp: null
+  name: kopstest6.kuberiter.com
+spec:
+  api:
+    loadBalancer:
+      type: Public
+  authorization:
+    alwaysAllow: {}
+  channel: stable
+  cloudProvider: aws
+  configBase: s3://kopstest.kuberiter.com/kopstest.kuberiter.com
+  etcdClusters:
+  - etcdMembers:
+    - instanceGroup: master-us-west-2a-1
+      name: a-1
+    - instanceGroup: master-us-west-2b-1
+      name: b-1
+    - instanceGroup: master-us-west-2a-2
+      name: a-2
+    name: main
+  - etcdMembers:
+    - instanceGroup: master-us-west-2a-1
+      name: a-1
+    - instanceGroup: master-us-west-2b-1
+      name: b-1
+    - instanceGroup: master-us-west-2a-2
+      name: a-2
+    name: events
+  iam:
+    allowContainerRegistry: true
+    legacy: false
+  kubernetesApiAccess:
+  - 0.0.0.0/0
+  kubernetesVersion: 1.9.3
+  masterPublicName: api.kopstest.kuberiter.com
+  networkCIDR: 10.0.0.0/16
+  networkID: vpc-187d5f61
+  networking:
+    weave:
+      mtu: 8912
+  nonMasqueradeCIDR: 100.64.0.0/10
+  sshAccess:
+  - 0.0.0.0/0
+  subnets:
+  - cidr: 10.0.32.0/19
+    name: us-west-2a
+    type: Private
+    zone: us-west-2a
+  - cidr: 10.0.64.0/19
+    name: us-west-2b
+    type: Private
+    zone: us-west-2b
+  - cidr: 10.0.0.0/22
+    name: utility-us-west-2a
+    type: Utility
+    zone: us-west-2a
+  - cidr: 10.0.4.0/22
+    name: utility-us-west-2b
+    type: Utility
+    zone: us-west-2b
+  topology:
+    bastion:
+      bastionPublicName: bastion.kopstest.kuberiter.com
+    dns:
+      type: Public
+    masters: private
+    nodes: private
+
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: kopstest.kuberiter.com
+  name: master-us-west-2a-1
+spec:
+  image: 309956199498/RHEL-7.4_HVM-20180103-x86_64-2-Hourly2-GP2
+  machineType: t2.micro
+  maxSize: 1
+  minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: master-us-west-2a-1
+  role: Master
+  rootVolumeSize: 16
+  subnets:
+  - us-west-2a
+
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: kopstest.kuberiter.com
+  name: master-us-west-2b-1
+spec:
+  image: 309956199498/RHEL-7.4_HVM-20180103-x86_64-2-Hourly2-GP2
+  machineType: t2.micro
+  maxSize: 1
+  minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: master-us-west-2b-1
+  role: Master
+  rootVolumeSize: 16
+  subnets:
+  - us-west-2b
+
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: kopstest.kuberiter.com
+  name: master-us-west-2a-2
+spec:
+  image: 309956199498/RHEL-7.4_HVM-20180103-x86_64-2-Hourly2-GP2
+  machineType: t2.micro
+  maxSize: 1
+  minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: master-us-west-2a-2
+  role: Master
+  rootVolumeSize: 16
+  subnets:
+  - us-west-2a
+
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: kopstest.kuberiter.com
+  name: nodes
+spec:
+  image: 309956199498/RHEL-7.4_HVM-20180103-x86_64-2-Hourly2-GP2
+  machineType: t2.micro
+  maxSize: 3
+  minSize: 3
+  nodeLabels:
+    kops.k8s.io/instancegroup: nodes
+  role: Node
+  rootVolumeSize: 15
+  subnets:
+  - us-west-2a
+  - us-west-2b
+
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: null
+  labels:
+    kops.k8s.io/cluster: kopstest.kuberiter.com
+  name: bastions
+spec:
+  image: 309956199498/RHEL-7.4_HVM-20180103-x86_64-2-Hourly2-GP2
+  machineType: t2.micro
+  maxSize: 1
+  minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: bastions
+  role: Bastion
+  subnets:
+  - utility-us-west-2a
+  - utility-us-west-2b
