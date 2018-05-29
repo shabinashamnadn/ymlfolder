@@ -2,7 +2,7 @@ apiVersion: kops/v1alpha2
 kind: Cluster
 metadata:
   creationTimestamp: null
-  name: kopstest5.kuberiter.com
+  name: kopstest.kuberiter.com
 spec:
   api:
     loadBalancer:
@@ -37,7 +37,7 @@ spec:
   kubernetesVersion: 1.9.3
   masterPublicName: api.kopstest.kuberiter.com
   networkCIDR: 10.0.0.0/16
-  networkID: vpc-187d5f61
+  networkID: vpc-0431357d
   networking:
     weave:
       mtu: 8912
